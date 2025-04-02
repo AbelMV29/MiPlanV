@@ -1,0 +1,106 @@
+# Archivos y carpetas de .NET
+bin/
+obj/
+*.user
+*.userosscache
+*.suo
+*.userprefs
+.vs/
+.vscode/
+*.swp
+*.swo
+*.swn
+*.bak
+
+# Archivos de compilación
+[Dd]ebug/
+[Dd]ebugPublic/
+[Rr]elease/
+[Rr]eleases/
+x64/
+x86/
+[Aa][Rr][Mm]/
+[Aa][Rr][Mm]64/
+bld/
+[Bb]in/
+[Oo]bj/
+[Ll]og/
+[Ll]ogs/
+
+# Archivos de Visual Studio
+*.ncrunch*
+*.DotSettings
+*.DotSettings.user
+*.ncrunchsolution
+*.ncrunchproject
+*.DotSettings.user
+
+# Archivos de Node.js y npm
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+.npm
+.yarn/cache
+.yarn/unplugged
+.yarn/build-state.yml
+.yarn/install-state.gz
+
+# Archivos de entorno
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+appsettings.*.json
+!appsettings.json
+!appsettings.Example.json
+
+# Archivos de compilación de React
+dist/
+build/
+out/
+
+# Archivos de cobertura de pruebas
+coverage/
+*.coverage
+*.coveragexml
+
+# Archivos de caché
+.cache/
+.eslintcache
+.stylelintcache
+.prettiercache
+
+# Archivos de sistema operativo
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Archivos de IDE
+.idea/
+*.sln.iml
+*.csproj.user
+*.vbproj.user
+*.fsproj.user
+*.suo
+*.ntvs*
+*.njsproj
+*.sln.docstates
+
+# Archivos de certificados
+*.pfx
+*.key
+*.pem
+*.crt
+
+# Archivos de migración de Entity Framework
+Migrations/*.cs
+!Migrations/InitialCreate.cs
+
+# Archivos de configuración local
+launchSettings.json
+*.Development.json
+*.Production.json 
