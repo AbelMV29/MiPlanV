@@ -1,0 +1,6 @@
+@MiPlanV.Server_HostAddress = http://localhost:5094
+
+GET {{MiPlanV.Server_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
