@@ -8,6 +8,6 @@ public class PackedLunch : BaseEntity
     public bool IsVegan { get; set; }
     public string Image { get; set; } = string.Empty;
     public string? Description { get; set; } = string.Empty;
-    public bool IsCurrent { get; set; } = false;
+    public bool IsCurrent { get; set; }
     public virtual ICollection<OrderDetail> OrderDetails { get; set; }
 }
