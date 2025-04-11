@@ -1,4 +1,4 @@
-
+using MiPlanV.Infrastructure;
 namespace MiPlanV.Server
 {
     public class Program
@@ -12,10 +12,11 @@ namespace MiPlanV.Server
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
+            builder.Services.AddInfrastructureServices(builder.Configuration);
             builder.Services.AddSwaggerGen();
-
             var app = builder.Build();
 
+            app.RunMigrations();
             app.UseDefaultFiles();
             app.UseStaticFiles();
 
