@@ -1,10 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using MiPlanV.Application.Common.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace MiPlanV.Infrastructure.Repository.Common
 {
@@ -17,34 +12,33 @@ namespace MiPlanV.Infrastructure.Repository.Common
             _context = context;
             _dbSet = _context.Set<T>();
         }
-        public async Task<T> AddAsync(T entity)
+        public async Task<T> AddAsync(T entity, CancellationToken token)
         {
-            await _dbSet.AddAsync(entity);
-            await _context.SaveChangesAsync(CancellationToken.None);//CancelToken Hardcodeado IMPLEMENTAR.
+            await _dbSet.AddAsync(entity,token);
+            await _context.SaveChangesAsync(token);
             return entity;
         }
 
-        public async Task<bool> DeleteAsync(T entity)
+        /// <summary>
+        /// Dentro del Iqueryable pueden utilzar AsNoTracking() en la 
+        /// ejecucion de GetAllQuery para evitar el tracking de entidades
+        /// By: Joneee feat.Abel
+        /// </summary>
+        /// <returns>Entidad como Query</returns>
+        public  IQueryable<T> GetAllQuery()
         {
-            _dbSet.Remove(entity);
-            await _context.SaveChangesAsync(CancellationToken.None);
-            return true; //HARDCODEADO  
+            return  _dbSet.AsQueryable();
         }
 
-        public async Task<IEnumerable<T>> GetAllAsync()//Es buena forma de implementar el ToListAsync?
+        public async Task<T?> GetByIdAsync(int id)//posible Eliminacion por el GetAllQuery, Polque? no hay polque.
         {
-            return await _dbSet.ToListAsync();
+            return await _dbSet.FindAsync(id);
         }
 
-        public async Task<T?> GetByIdAsync(int id)
-        {
-            return await _dbSet.FindAsync(id);//Implementar AsNoTracking??
-        }
-
-        public async Task<T> UpdateAsync(T entity)
+        public async Task<T> UpdateAsync(T entity,CancellationToken token)
         {
             _dbSet.Update(entity);
-            await _context.SaveChangesAsync(CancellationToken.None);
+            await _context.SaveChangesAsync(token);
             return entity;
         }
     }
