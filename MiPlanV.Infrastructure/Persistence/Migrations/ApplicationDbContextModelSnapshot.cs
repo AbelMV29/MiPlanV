@@ -47,6 +47,9 @@ namespace MiPlanV.Infrastructure.Persistence.Migrations
                     b.Property<int?>("Floor")
                         .HasColumnType("int");
 
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
                     b.Property<string>("Number")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -79,6 +82,9 @@ namespace MiPlanV.Infrastructure.Persistence.Migrations
                     b.Property<DateTime>("EndDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
                     b.Property<DateTime>("StartDate")
                         .HasColumnType("datetime2");
 
@@ -97,6 +103,9 @@ namespace MiPlanV.Infrastructure.Persistence.Migrations
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
 
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(18,2)");
@@ -119,7 +128,8 @@ namespace MiPlanV.Infrastructure.Persistence.Migrations
                         new
                         {
                             Id = 1,
-                            CreatedAt = new DateTime(2025, 4, 11, 16, 11, 13, 417, DateTimeKind.Utc).AddTicks(6668),
+                            CreatedAt = new DateTime(2025, 4, 14, 15, 48, 32, 554, DateTimeKind.Utc).AddTicks(3674),
+                            IsActive = true,
                             Price = 7400m,
                             QuantityId = 1,
                             SizeId = 1
@@ -127,7 +137,8 @@ namespace MiPlanV.Infrastructure.Persistence.Migrations
                         new
                         {
                             Id = 2,
-                            CreatedAt = new DateTime(2025, 4, 11, 16, 11, 13, 417, DateTimeKind.Utc).AddTicks(6670),
+                            CreatedAt = new DateTime(2025, 4, 14, 15, 48, 32, 554, DateTimeKind.Utc).AddTicks(3679),
+                            IsActive = true,
                             Price = 50000m,
                             QuantityId = 2,
                             SizeId = 1
@@ -135,7 +146,8 @@ namespace MiPlanV.Infrastructure.Persistence.Migrations
                         new
                         {
                             Id = 3,
-                            CreatedAt = new DateTime(2025, 4, 11, 16, 11, 13, 417, DateTimeKind.Utc).AddTicks(6672),
+                            CreatedAt = new DateTime(2025, 4, 14, 15, 48, 32, 554, DateTimeKind.Utc).AddTicks(3683),
+                            IsActive = true,
                             Price = 98000m,
                             QuantityId = 3,
                             SizeId = 1
@@ -143,7 +155,8 @@ namespace MiPlanV.Infrastructure.Persistence.Migrations
                         new
                         {
                             Id = 4,
-                            CreatedAt = new DateTime(2025, 4, 11, 16, 11, 13, 417, DateTimeKind.Utc).AddTicks(6674),
+                            CreatedAt = new DateTime(2025, 4, 14, 15, 48, 32, 554, DateTimeKind.Utc).AddTicks(3688),
+                            IsActive = true,
                             Price = 8500m,
                             QuantityId = 1,
                             SizeId = 2
@@ -151,7 +164,8 @@ namespace MiPlanV.Infrastructure.Persistence.Migrations
                         new
                         {
                             Id = 5,
-                            CreatedAt = new DateTime(2025, 4, 11, 16, 11, 13, 417, DateTimeKind.Utc).AddTicks(6675),
+                            CreatedAt = new DateTime(2025, 4, 14, 15, 48, 32, 554, DateTimeKind.Utc).AddTicks(3694),
+                            IsActive = true,
                             Price = 59000m,
                             QuantityId = 2,
                             SizeId = 2
@@ -159,7 +173,8 @@ namespace MiPlanV.Infrastructure.Persistence.Migrations
                         new
                         {
                             Id = 6,
-                            CreatedAt = new DateTime(2025, 4, 11, 16, 11, 13, 417, DateTimeKind.Utc).AddTicks(6677),
+                            CreatedAt = new DateTime(2025, 4, 14, 15, 48, 32, 554, DateTimeKind.Utc).AddTicks(3697),
+                            IsActive = true,
                             Price = 117000m,
                             QuantityId = 3,
                             SizeId = 2
@@ -184,6 +199,9 @@ namespace MiPlanV.Infrastructure.Persistence.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<bool>("Delivery")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
                     b.Property<decimal>("Mount")
@@ -222,6 +240,9 @@ namespace MiPlanV.Infrastructure.Persistence.Migrations
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
 
                     b.Property<int>("OfferId")
                         .HasColumnType("int");
@@ -267,6 +288,9 @@ namespace MiPlanV.Infrastructure.Persistence.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
                     b.Property<bool>("IsCurrent")
                         .HasColumnType("bit");
 
@@ -293,6 +317,9 @@ namespace MiPlanV.Infrastructure.Persistence.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -313,6 +340,13 @@ namespace MiPlanV.Infrastructure.Persistence.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("Value")
                         .HasColumnType("int");
 
@@ -324,20 +358,26 @@ namespace MiPlanV.Infrastructure.Persistence.Migrations
                         new
                         {
                             Id = 1,
-                            CreatedAt = new DateTime(2025, 4, 11, 16, 11, 13, 417, DateTimeKind.Utc).AddTicks(6616),
-                            Value = 1
+                            CreatedAt = new DateTime(2025, 4, 14, 15, 48, 32, 554, DateTimeKind.Utc).AddTicks(3579),
+                            IsActive = true,
+                            Name = "Individual",
+                            Value = 0
                         },
                         new
                         {
                             Id = 2,
-                            CreatedAt = new DateTime(2025, 4, 11, 16, 11, 13, 417, DateTimeKind.Utc).AddTicks(6617),
-                            Value = 7
+                            CreatedAt = new DateTime(2025, 4, 14, 15, 48, 32, 554, DateTimeKind.Utc).AddTicks(3584),
+                            IsActive = true,
+                            Name = "Pack 7",
+                            Value = 0
                         },
                         new
                         {
                             Id = 3,
-                            CreatedAt = new DateTime(2025, 4, 11, 16, 11, 13, 417, DateTimeKind.Utc).AddTicks(6618),
-                            Value = 14
+                            CreatedAt = new DateTime(2025, 4, 14, 15, 48, 32, 554, DateTimeKind.Utc).AddTicks(3587),
+                            IsActive = true,
+                            Name = "Pack 14",
+                            Value = 0
                         });
                 });
 
@@ -352,6 +392,9 @@ namespace MiPlanV.Infrastructure.Persistence.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -364,13 +407,15 @@ namespace MiPlanV.Infrastructure.Persistence.Migrations
                         new
                         {
                             Id = 1,
-                            CreatedAt = new DateTime(2025, 4, 11, 16, 11, 13, 417, DateTimeKind.Utc).AddTicks(6248),
+                            CreatedAt = new DateTime(2025, 4, 14, 15, 48, 32, 554, DateTimeKind.Utc).AddTicks(3015),
+                            IsActive = true,
                             Name = "Standar"
                         },
                         new
                         {
                             Id = 2,
-                            CreatedAt = new DateTime(2025, 4, 11, 16, 11, 13, 417, DateTimeKind.Utc).AddTicks(6252),
+                            CreatedAt = new DateTime(2025, 4, 14, 15, 48, 32, 554, DateTimeKind.Utc).AddTicks(3019),
+                            IsActive = true,
                             Name = "Grande"
                         });
                 });
@@ -390,6 +435,9 @@ namespace MiPlanV.Infrastructure.Persistence.Migrations
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("Email")
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
@@ -397,19 +445,18 @@ namespace MiPlanV.Infrastructure.Persistence.Migrations
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("bit");
 
-                    b.Property<string>("FirstName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("LastName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
 
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("bit");
 
                     b.Property<DateTimeOffset?>("LockoutEnd")
                         .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("NormalizedEmail")
                         .HasMaxLength(256)

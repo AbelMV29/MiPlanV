@@ -8,6 +8,10 @@ namespace MiPlanV.Infrastructure.Persistence
 {
     public class ApplicationDbContext : IdentityDbContext<User, IdentityRole<int>, int>, IApplicationDbContext
     {
+        public ApplicationDbContext()
+        {
+        }
+
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
         {
@@ -22,6 +26,16 @@ namespace MiPlanV.Infrastructure.Persistence
         public DbSet<PaymentMethod> PaymentMethods { get; set; }
         public DbSet<Quantity> Quantities { get; set; }
         public DbSet<Size> Sizes { get; set; }
+
+        public async Task SaveChangesAsync()
+        {
+            await base.SaveChangesAsync();
+        }
+
+        public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+        {
+            return await base.SaveChangesAsync(cancellationToken);
+        }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -89,17 +103,17 @@ namespace MiPlanV.Infrastructure.Persistence
                 entity.HasData(new Quantity
                 {
                     Id = 1,
-                    Value = 1,
+                    Name = "Individual",
                     CreatedAt = DateTime.UtcNow
                 }, new Quantity
                 {
                     Id = 2,
-                    Value = 7,
+                    Name = "Pack 7",
                     CreatedAt = DateTime.UtcNow
                 }, new Quantity
                 {
                     Id = 3,
-                    Value = 14,
+                    Name = "Pack 14",
                     CreatedAt = DateTime.UtcNow
                 });
             });

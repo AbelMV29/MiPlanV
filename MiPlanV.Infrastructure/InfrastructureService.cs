@@ -2,9 +2,14 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using MiPlanV.Application.Common.Interfaces;
 using MiPlanV.Infrastructure.Persistence;
-using MiPlanV.Domain.Entities;
 using Microsoft.AspNetCore.Builder;
+using MiPlanV.Application.Users.Interfaces;
+using MiPlanV.Domain.Entities;
+using MiPlanV.Infrastructure.Repository;
+using Microsoft.Extensions.Logging;
+
 namespace MiPlanV.Infrastructure;
 
 public static class InfrastructureService
@@ -22,19 +27,44 @@ public static class InfrastructureService
         })
         .AddEntityFrameworkStores<ApplicationDbContext>()
         .AddDefaultTokenProviders();
+
         services.AddDbContext<ApplicationDbContext>(options =>
-        {
-            options.UseSqlServer(configuration.GetConnectionString("DefaultConnection"));
-        });
-        
+            options.UseSqlServer(
+                configuration.GetConnectionString("DefaultConnection"),
+                b => b.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.FullName)));
+
+        services.AddScoped<IApplicationDbContext>(provider => provider.GetRequiredService<ApplicationDbContext>());
+        services.AddScoped<IUserRepository, UserRepository>();
+
         return services;
     }
-    public static void RunMigrations(this WebApplication webApplication)
+
+    public static async Task RunMigrationsAsync(this WebApplication app)
     {
-        using (var scope = webApplication.Services.CreateScope())
+        using var scope = app.Services.CreateScope();
+        var services = scope.ServiceProvider;
+        var logger = services.GetRequiredService<ILogger<ApplicationDbContext>>();
+        
+        try
         {
-            var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-            db.Database.Migrate();
+            var context = services.GetRequiredService<ApplicationDbContext>();
+            logger.LogInformation("Iniciando migración de la base de datos...");
+            
+            if ((await context.Database.GetPendingMigrationsAsync()).Any())
+            {
+                logger.LogInformation("Aplicando migraciones pendientes...");
+                await context.Database.MigrateAsync();
+                logger.LogInformation("Migraciones aplicadas exitosamente");
+            }
+            else
+            {
+                logger.LogInformation("No hay migraciones pendientes");
+            }
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Ocurrió un error al ejecutar las migraciones");
+            throw;
         }
     }
 }
