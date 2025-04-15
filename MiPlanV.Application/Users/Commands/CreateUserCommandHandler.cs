@@ -19,7 +19,8 @@ public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, User>
         {
             Name = $"{request.FirstName} {request.LastName}",
             UserName = request.Email,
-            Email = request.Email
+            Email = request.Email,
+            PhoneNumber = request.PhoneNumber
         };
 
         return await _userRepository.AddAsync(user, request.Password);

@@ -1,4 +1,3 @@
-
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import fs from 'fs';
@@ -43,9 +42,15 @@ export default defineConfig({
     server: {
         proxy: {
             '/api': {
-                target: 'https://localhost:7001',
+                target: 'http://localhost:7027',
                 changeOrigin: true,
                 secure: false,
+            },
+            '/auth': {
+                target: 'http://localhost:7027',
+                changeOrigin: true,
+                secure: false,
+                rewrite: (path) => path.replace(/^\/auth/, '/api/auth')
             },
             '^/weatherforecast': {
                 target,

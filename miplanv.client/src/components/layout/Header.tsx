@@ -1,14 +1,16 @@
 import React, { useState } from 'react';
-import ReactDOM from 'react-dom';
-import { AppBar, Toolbar, IconButton, Typography, Button, Avatar, Menu, MenuItem, Box } from '@mui/material';
+import { createRoot } from 'react-dom/client';
+import { AppBar, Toolbar, IconButton, Typography, Button, Menu, MenuItem, Box } from '@mui/material';
 import { AccountCircle, Login as LoginIcon } from '@mui/icons-material';
 import Swal from 'sweetalert2';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, BrowserRouter } from 'react-router-dom';
 import Login from '../auth/Login';
+import authService from '../../services/auth.service';
+import useAuthStore from '../../store/useAuthStore';
 
 const Header: React.FC = () => {
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-    const [isAuthenticated, setIsAuthenticated] = useState(false);
+    const { user, isAuthenticated, login, logout } = useAuthStore();
     const navigate = useNavigate();
 
     const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
@@ -30,29 +32,63 @@ const Header: React.FC = () => {
             showConfirmButton: false,
             allowOutsideClick: false,
             didOpen: () => {
-                const root = document.getElementById('login-form');
-                if (root) {
+                const rootElement = document.getElementById('login-form');
+                if (rootElement) {
+                    const root = createRoot(rootElement);
                     const loginComponent = (
-                        <Login
-                            onLogin={(email: string, password: string) => {
-                                setIsAuthenticated(true);
-                                Swal.close();
-                            }}
-                            onGoogleLogin={(response: any) => {
-                                setIsAuthenticated(true);
-                                Swal.close();
-                            }}
-                        />
+                        <BrowserRouter>
+                            <Login
+                                onLogin={async (email, password) => {
+                                    try {
+                                        const userData = await authService.login(email, password);
+                                        // El token ya ha sido guardado por authService.login
+                                        // Solo necesitamos actualizar el estado del store
+                                        login(
+                                            {
+                                                id: userData.userId.toString(),
+                                                name: userData.name,
+                                                email: userData.email,
+                                                role: userData.role
+                                            }, 
+                                            userData.token
+                                        );
+                                        
+                                        Swal.close();
+                                    } catch (error) {
+                                        // El error ya se maneja en el componente Login
+                                    }
+                                }}
+                                onGoogleLogin={(response) => {
+                                    // El token y la información de usuario ya han sido procesados
+                                    // Solo necesitamos actualizar el estado del store
+                                    login(
+                                        {
+                                            id: response.userId.toString(),
+                                            name: response.name,
+                                            email: response.email,
+                                            role: response.role
+                                        }, 
+                                        response.token
+                                    );
+                                    
+                                    Swal.close();
+                                }}
+                                onRegisterClick={() => {
+                                    Swal.close();
+                                    navigate('/register');
+                                }}
+                            />
+                        </BrowserRouter>
                     );
-                    // @ts-ignore
-                    ReactDOM.render(loginComponent, root);
+                    root.render(loginComponent);
                 }
             }
         });
     };
 
-    const handleLogout = () => {
-        setIsAuthenticated(false);
+    const handleLogout = async () => {
+        await authService.logout();
+        logout();
         handleClose();
     };
 
@@ -81,6 +117,11 @@ const Header: React.FC = () => {
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: { xs: 1, sm: 2 } }}>
                     {isAuthenticated ? (
                         <>
+                            <Box sx={{ display: 'flex', alignItems: 'center', mr: 1 }}>
+                                <Typography variant="body2" sx={{ display: { xs: 'none', sm: 'block' } }}>
+                                    Hola, {user?.name || 'Usuario'}
+                                </Typography>
+                            </Box>
                             <IconButton
                                 size="large"
                                 aria-label="account of current user"
@@ -106,6 +147,10 @@ const Header: React.FC = () => {
                                 open={Boolean(anchorEl)}
                                 onClose={handleClose}
                             >
+                                <MenuItem onClick={() => {
+                                    handleClose();
+                                    navigate('/profile');
+                                }}>Mi Perfil</MenuItem>
                                 <MenuItem onClick={handleLogout}>Cerrar Sesión</MenuItem>
                             </Menu>
                         </>
@@ -127,4 +172,4 @@ const Header: React.FC = () => {
     );
 };
 
-export default Header; 
+export default Header;

@@ -2,9 +2,9 @@ import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
 import Register from '../index';
-import { authService } from '../../../services/authService';
+import authService from '../../../services/auth.service';
 
-jest.mock('../../../services/authService');
+jest.mock('../../../services/auth.service');
 jest.mock('sweetalert2', () => ({
     fire: jest.fn().mockResolvedValue({ isConfirmed: true })
 }));

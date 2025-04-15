@@ -1,10 +1,11 @@
 import React, { useState, useCallback } from 'react';
-import { Box, Button, TextField, Typography, Container, Paper, Tooltip } from '@mui/material';
+import { Box, Button, TextField, Typography, Container, Paper, Tooltip, IconButton, InputAdornment } from '@mui/material';
+import { Visibility, VisibilityOff } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import * as yup from 'yup';
-import { authService } from '../../services/authService';
+import userService from '../../services/user.service';
 import Swal from 'sweetalert2';
-
+    
 const passwordRequirements = [
     'Mínimo 8 caracteres',
     'Al menos una mayúscula',
@@ -26,6 +27,8 @@ const registerSchema = yup.object().shape({
         .email('Email inválido')
         .matches(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/, 'El email debe tener un dominio válido (ej: usuario@dominio.com)')
         .required('Email es requerido'),
+    phoneNumber: yup.string()
+        .matches(/^(\+?\d{1,3}[-.\s]?)?\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}$/, 'Formato de teléfono inválido (ej: 123-456-7890)'),
     password: yup.string()
         .min(8, 'La contraseña debe tener al menos 8 caracteres')
         .matches(/[A-Z]/, 'La contraseña debe contener al menos una mayúscula')
@@ -38,17 +41,28 @@ const registerSchema = yup.object().shape({
         .required('Confirmar contraseña es requerida'),
 });
 
-const Register: React.FC = () => {
+const Register = () => {
     const navigate = useNavigate();
     const [formData, setFormData] = useState({
         firstName: '',
         lastName: '',
         email: '',
+        phoneNumber: '',
         password: '',
         confirmPassword: '',
     });
     const [errors, setErrors] = useState<{ [key: string]: string }>({});
     const [touched, setTouched] = useState<{ [key: string]: boolean }>({});
+    const [showPassword, setShowPassword] = useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+    const handleTogglePasswordVisibility = () => {
+        setShowPassword(!showPassword);
+    };
+
+    const handleToggleConfirmPasswordVisibility = () => {
+        setShowConfirmPassword(!showConfirmPassword);
+    };
 
     const validateField = useCallback(async (name: string, value: string) => {
         try {
@@ -95,11 +109,12 @@ const Register: React.FC = () => {
         try {
             await registerSchema.validate(formData, { abortEarly: false });
             
-            await authService.register({
+            await userService.register({
                 firstName: formData.firstName,
                 lastName: formData.lastName,
                 email: formData.email,
-                password: formData.password
+                password: formData.password,
+                phoneNumber: formData.phoneNumber
             });
 
             await Swal.fire({
@@ -198,9 +213,20 @@ const Register: React.FC = () => {
                     />
                     <TextField
                         fullWidth
+                        label="Teléfono (opcional)"
+                        name="phoneNumber"
+                        value={formData.phoneNumber}
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                        error={!!errors.phoneNumber}
+                        helperText={errors.phoneNumber}
+                        margin="normal"
+                    />
+                    <TextField
+                        fullWidth
                         label="Contraseña"
                         name="password"
-                        type="password"
+                        type={showPassword ? "text" : "password"}
                         value={formData.password}
                         onChange={handleChange}
                         onBlur={handleBlur}
@@ -217,53 +243,64 @@ const Register: React.FC = () => {
                         margin="normal"
                         InputProps={{
                             endAdornment: (
-                                <Tooltip 
-                                    title={
-                                        <Box>
-                                            <Typography variant="subtitle2" gutterBottom>
-                                                Requisitos de contraseña:
-                                            </Typography>
-                                            <ul style={{ margin: 0, paddingLeft: '1rem' }}>
-                                                {passwordRequirements.map((req, index) => (
-                                                    <li key={index}>{req}</li>
-                                                ))}
-                                            </ul>
-                                        </Box>
-                                    }
-                                    arrow
-                                >
-                                    <Box 
-                                        sx={{ 
-                                            cursor: 'help',
-                                            display: 'flex',
-                                            alignItems: 'center',
-                                            justifyContent: 'center',
-                                            width: '18px',
-                                            height: '18px',
-                                            borderRadius: '50%',
-                                            backgroundColor: '#1976d2',
-                                            color: 'white',
-                                            '&:hover': {
-                                                backgroundColor: '#1565c0',
-                                            }
-                                        }}
+                                <React.Fragment>
+                                    <Tooltip 
+                                        title={
+                                            <Box>
+                                                <Typography variant="subtitle2" gutterBottom>
+                                                    Requisitos de contraseña:
+                                                </Typography>
+                                                <ul style={{ margin: 0, paddingLeft: '1rem' }}>
+                                                    {passwordRequirements.map((req, index) => (
+                                                        <li key={index}>{req}</li>
+                                                    ))}
+                                                </ul>
+                                            </Box>
+                                        }
+                                        arrow
                                     >
-                                        <Typography 
-                                            variant="caption" 
+                                        <Box 
                                             sx={{ 
-                                                fontSize: '12px', 
-                                                fontWeight: 'bold',
-                                                lineHeight: 1,
+                                                cursor: 'help',
                                                 display: 'flex',
                                                 alignItems: 'center',
                                                 justifyContent: 'center',
-                                                height: '100%'
+                                                width: '18px',
+                                                height: '18px',
+                                                borderRadius: '50%',
+                                                backgroundColor: '#1976d2',
+                                                color: 'white',
+                                                '&:hover': {
+                                                    backgroundColor: '#1565c0',
+                                                }
                                             }}
                                         >
-                                            i
-                                        </Typography>
-                                    </Box>
-                                </Tooltip>
+                                            <Typography 
+                                                variant="caption" 
+                                                sx={{ 
+                                                    fontSize: '12px', 
+                                                    fontWeight: 'bold',
+                                                    lineHeight: 1,
+                                                    display: 'flex',
+                                                    alignItems: 'center',
+                                                    justifyContent: 'center',
+                                                    height: '100%'
+                                                }}
+                                            >
+                                                i
+                                            </Typography>
+                                        </Box>
+                                    </Tooltip>
+                                    <InputAdornment position="end">
+                                        <IconButton
+                                            aria-label="toggle password visibility"
+                                            onClick={handleTogglePasswordVisibility}
+                                            edge="end"
+                                        >
+                                            {showPassword ? <VisibilityOff /> : <Visibility />}
+                                        </IconButton>
+                                    </InputAdornment>
+                                </React.Fragment>
                             )
                         }}
                     />
@@ -271,13 +308,26 @@ const Register: React.FC = () => {
                         fullWidth
                         label="Confirmar Contraseña"
                         name="confirmPassword"
-                        type="password"
+                        type={showConfirmPassword ? "text" : "password"}
                         value={formData.confirmPassword}
                         onChange={handleChange}
                         onBlur={handleBlur}
                         error={!!errors.confirmPassword}
                         helperText={errors.confirmPassword}
                         margin="normal"
+                        InputProps={{
+                            endAdornment: (
+                                <InputAdornment position="end">
+                                    <IconButton
+                                        aria-label="toggle confirm password visibility"
+                                        onClick={handleToggleConfirmPasswordVisibility}
+                                        edge="end"
+                                    >
+                                        {showConfirmPassword ? <VisibilityOff /> : <Visibility />}
+                                    </IconButton>
+                                </InputAdornment>
+                            )
+                        }}
                     />
                     <Button
                         type="submit"

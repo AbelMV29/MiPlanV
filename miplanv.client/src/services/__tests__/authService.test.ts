@@ -1,8 +1,8 @@
-import { authService } from '../authService';
-import { api } from '../api';
+import authService from '../auth.service';
+import api from '../api.service';
 import { UserRegister, UserResponse } from '../../models/User';
 
-jest.mock('../api');
+jest.mock('../api.service');
 
 describe('authService', () => {
     const mockUser: UserRegister = {

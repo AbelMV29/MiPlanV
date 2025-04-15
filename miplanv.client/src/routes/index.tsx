@@ -4,6 +4,7 @@ import Register from '../Pages/Register/index';
 import Users from '../Pages/Users/index';
 import PrivateRoute from './PrivateRoute.tsx';
 import Layout from '../layout/Layout.tsx';
+import NotFound from '../Pages/NotFound/index';
 
 export const router = createBrowserRouter([
     {
@@ -25,6 +26,10 @@ export const router = createBrowserRouter([
                         <Users />
                     </PrivateRoute>
                 ),
+            },
+            {
+                path: '*',
+                element: <NotFound />,
             },
         ],
     },

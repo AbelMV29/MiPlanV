@@ -32,7 +32,7 @@ public class IdentityInitializer
         if (!await _roleManager.RoleExistsAsync(Roles.User))
             await _roleManager.CreateAsync(new IdentityRole<int>(Roles.User));
 
-        var adminEmail = "admin@miplanv.com";
+        var adminEmail = "nataliajmoreira@gmail.com";
         var adminUser = await _userManager.FindByEmailAsync(adminEmail);
 
         if (adminUser == null)
@@ -42,7 +42,9 @@ public class IdentityInitializer
                 UserName = adminEmail,
                 Email = adminEmail,
                 Name = "Admin User",
-                EmailConfirmed = true
+                EmailConfirmed = true,
+                IsActive = true,
+                CreatedAt = DateTime.UtcNow
             };
 
             var result = await _userManager.CreateAsync(adminUser, "Admin123!");
