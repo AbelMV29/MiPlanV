@@ -28,6 +28,24 @@ public static class InfrastructureService
         .AddEntityFrameworkStores<ApplicationDbContext>()
         .AddDefaultTokenProviders();
 
+        // Configurar la autenticación por cookies para evitar redirecciones automáticas
+        services.ConfigureApplicationCookie(options =>
+        {
+            // Para APIs, queremos devolver 401 en lugar de redirigir a login
+            options.Events.OnRedirectToLogin = context =>
+            {
+                context.Response.StatusCode = 401;
+                return Task.CompletedTask;
+            };
+            
+            // Para acceso denegado, devolver 403 en lugar de redirigir
+            options.Events.OnRedirectToAccessDenied = context =>
+            {
+                context.Response.StatusCode = 403;
+                return Task.CompletedTask;
+            };
+        });
+
         services.AddDbContext<ApplicationDbContext>(options =>
             options.UseSqlServer(
                 configuration.GetConnectionString("DefaultConnection"),

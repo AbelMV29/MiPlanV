@@ -4,6 +4,26 @@ import { router } from './routes';
 import './styles/global.css';
 import useAuthStore from './store/useAuthStore';
 import { CircularProgress, Box } from '@mui/material';
+import { ThemeProvider, createTheme } from '@mui/material/styles';
+import CssBaseline from '@mui/material/CssBaseline';
+
+// Crear tema personalizado
+const theme = createTheme({
+  components: {
+    MuiCssBaseline: {
+      styleOverrides: `
+        input:-webkit-autofill,
+        input:-webkit-autofill:hover, 
+        input:-webkit-autofill:focus, 
+        input:-webkit-autofill:active {
+          -webkit-box-shadow: 0 0 0 30px var(--color-fondo) inset !important;
+          -webkit-text-fill-color: var(--color-texto) !important;
+          transition: background-color 5000s ease-in-out 0s;
+        }
+      `,
+    },
+  },
+});
 
 const App: React.FC = () => {
     const { initFromToken } = useAuthStore();
@@ -40,7 +60,12 @@ const App: React.FC = () => {
         );
     }
 
-    return <RouterProvider router={router} />;
+    return (
+        <ThemeProvider theme={theme}>
+            <CssBaseline />
+            <RouterProvider router={router} />
+        </ThemeProvider>
+    );
 };
 
 export default App;

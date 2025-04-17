@@ -3,15 +3,17 @@ export interface UserRegister {
     lastName: string;
     email: string;
     password: string;
-    phoneNumber?: string;
+    phoneNumber: string;
 }
 
 export interface UserResponse {
     id: number;
-    firstName: string;
-    lastName: string;
+    name: string;
     email: string;
     phoneNumber?: string;
+    isActive?: boolean;
+    createdAt?: string;
+    role?: string;
 }
 
 export interface AuthUser {

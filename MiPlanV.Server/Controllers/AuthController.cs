@@ -8,6 +8,7 @@ using Microsoft.IdentityModel.Tokens;
 using MiPlanV.Domain.Common.Constants;
 using MiPlanV.Domain.Entities;
 using Microsoft.AspNetCore.Cors;
+using Microsoft.AspNetCore.Authorization;
 
 namespace MiPlanV.Server.Controllers;
 
@@ -36,30 +37,61 @@ public class AuthController : ControllerBase
     [HttpPost("login")]
     public async Task<ActionResult<AuthResponse>> Login([FromBody] LoginRequest model)
     {
-        var user = await _userManager.FindByEmailAsync(model.Email);
-        if (user == null)
+        try
         {
-            return Unauthorized(new { message = "Email o contraseña inválidos" });
+            _logger.LogInformation($"Intento de login para email: {model.Email}");
+            
+            if (string.IsNullOrEmpty(model.Email) || string.IsNullOrEmpty(model.Password))
+            {
+                _logger.LogWarning("Intento de login con email o contraseña vacíos");
+                return BadRequest(new { message = "Email y contraseña son requeridos" });
+            }
+            
+            var user = await _userManager.FindByEmailAsync(model.Email);
+            if (user == null)
+            {
+                _logger.LogWarning($"Intento de login fallido: usuario no encontrado para {model.Email}");
+                return Unauthorized(new { message = "Email o contraseña inválidos" });
+            }
+
+            if (!user.IsActive)
+            {
+                _logger.LogWarning($"Intento de login fallido: usuario inactivo {model.Email}");
+                return Unauthorized(new { message = "La cuenta está desactivada" });
+            }
+
+            var result = await _signInManager.CheckPasswordSignInAsync(user, model.Password, false);
+            if (!result.Succeeded)
+            {
+                _logger.LogWarning($"Intento de login fallido: contraseña incorrecta para {model.Email}");
+                return Unauthorized(new { message = "Email o contraseña inválidos" });
+            }
+
+            // Generar token JWT
+            var token = await GenerateJwtToken(user);
+            _logger.LogInformation($"Login exitoso para {model.Email}, token generado");
+
+            var roles = await _userManager.GetRolesAsync(user);
+            _logger.LogInformation($"Roles del usuario {model.Email}: {string.Join(", ", roles)}");
+
+            // Respuesta con información del usuario y el token
+            var response = new AuthResponse
+            {
+                Token = token,
+                Email = user.Email,
+                UserId = user.Id,
+                Name = user.Name,
+                PhoneNumber = user.PhoneNumber,
+                Role = roles.FirstOrDefault()
+            };
+            
+            return Ok(response);
         }
-
-        var result = await _signInManager.CheckPasswordSignInAsync(user, model.Password, false);
-        if (!result.Succeeded)
+        catch (Exception ex)
         {
-            return Unauthorized(new { message = "Email o contraseña inválidos" });
+            _logger.LogError(ex, $"Error inesperado en login para {model.Email}: {ex.Message}");
+            return StatusCode(500, new { message = "Error en el servidor. Por favor intente más tarde." });
         }
-
-        // Generar token JWT
-        var token = await GenerateJwtToken(user);
-
-        return Ok(new AuthResponse
-        {
-            Token = token,
-            Email = user.Email,
-            UserId = user.Id,
-            Name = user.Name,
-            PhoneNumber = user.PhoneNumber,
-            Role = (await _userManager.GetRolesAsync(user)).FirstOrDefault()
-        });
     }
 
     [HttpPost("google")]
@@ -139,50 +171,139 @@ public class AuthController : ControllerBase
         }
     }
 
-    [HttpPost("set-cookie")]
-    public IActionResult SetCookie([FromBody] TokenRequest request)
-    {
-        if (string.IsNullOrEmpty(request.Token))
-        {
-            return BadRequest(new { message = "Token no proporcionado" });
-        }
-
-        // Configurar cookie segura
-        var cookieOptions = new CookieOptions
-        {
-            HttpOnly = true,
-            Secure = true, // Para producción y desarrollo con HTTPS
-            SameSite = SameSiteMode.Strict,
-            Expires = DateTime.Now.AddDays(Convert.ToDouble(_configuration["Jwt:ExpireDays"]))
-        };
-
-        Response.Cookies.Append("auth_token", request.Token, cookieOptions);
-        return Ok(new { message = "Cookie establecida correctamente" });
-    }
-
-    [HttpPost("clear-cookie")]
-    public IActionResult ClearCookie()
-    {
-        // Eliminar la cookie de autenticación
-        Response.Cookies.Delete("auth_token");
-        return Ok(new { message = "Cookie eliminada correctamente" });
-    }
-
     [HttpPost("logout")]
     public async Task<IActionResult> Logout()
     {
-        // Implementar la lógica de revocación de tokens si es necesario
-        // Esto podría incluir agregar el token a una lista negra, etc.
-        
-        // Eliminar la cookie de autenticación
-        Response.Cookies.Delete("auth_token");
+        // En una implementación real, puedes agregar el token a una lista negra
+        // o implementar una estrategia para revocar tokens si es necesario
         
         return Ok(new { message = "Sesión cerrada correctamente" });
+    }
+
+    [HttpGet("verify-token")]
+    [AllowAnonymous]
+    public IActionResult VerifyToken()
+    {
+        try
+        {
+            // Obtener el token del header Authorization
+            var authHeader = HttpContext.Request.Headers["Authorization"].FirstOrDefault();
+            string token = null;
+
+            if (!string.IsNullOrEmpty(authHeader) && authHeader.StartsWith("Bearer ", StringComparison.OrdinalIgnoreCase))
+            {
+                token = authHeader.Substring("Bearer ".Length).Trim();
+                _logger.LogInformation("Token obtenido del header Authorization");
+            }
+
+            if (string.IsNullOrEmpty(token))
+            {
+                _logger.LogWarning("No se encontró token en el request");
+                return BadRequest(new { message = "No se encontró token en la solicitud" });
+            }
+
+            // Configurar los parámetros de validación
+            var validationParameters = new TokenValidationParameters
+            {
+                ValidateIssuer = false,
+                ValidateAudience = false,
+                ValidateLifetime = true,
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]))
+            };
+
+            // Validar y decodificar el token
+            var handler = new JwtSecurityTokenHandler();
+            var principal = handler.ValidateToken(token, validationParameters, out var validatedToken);
+            
+            var jwtToken = (JwtSecurityToken)validatedToken;
+            
+            // Establecer el principal de autenticación en el contexto HTTP
+            HttpContext.User = principal;
+            
+            // Extraer información del token
+            var userId = principal.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var email = principal.FindFirst(ClaimTypes.Email)?.Value;
+            var name = principal.FindFirst(ClaimTypes.Name)?.Value;
+            var roles = principal.FindAll(ClaimTypes.Role).Select(c => c.Value).ToList();
+            var expirationDate = jwtToken.ValidTo;
+
+            return Ok(new
+            {
+                isValid = true,
+                isAuthenticated = true,
+                userId,
+                email,
+                name,
+                roles,
+                expiresAt = expirationDate,
+                isExpired = DateTime.UtcNow > expirationDate
+            });
+        }
+        catch (SecurityTokenExpiredException)
+        {
+            _logger.LogWarning("Token JWT expirado");
+            return Unauthorized(new { message = "El token ha expirado" });
+        }
+        catch (SecurityTokenInvalidSignatureException)
+        {
+            _logger.LogWarning("Firma del token JWT inválida");
+            return Unauthorized(new { message = "La firma del token es inválida" });
+        }
+        catch (SecurityTokenException ex)
+        {
+            _logger.LogWarning(ex, "Token JWT inválido");
+            return Unauthorized(new { message = $"Token inválido: {ex.Message}" });
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error al verificar el token");
+            return StatusCode(500, new { message = $"Error al verificar el token: {ex.Message}" });
+        }
+    }
+
+    [HttpGet("whoami")]
+    [Authorize(AuthenticationSchemes = Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerDefaults.AuthenticationScheme)]
+    public IActionResult WhoAmI()
+    {
+        try
+        {
+            if (User?.Identity == null || !User.Identity.IsAuthenticated)
+            {
+                return Unauthorized(new { message = "No autenticado" });
+            }
+
+            var claims = User.Claims.ToDictionary(c => c.Type, c => c.Value);
+            var roles = User.Claims
+                .Where(c => c.Type == ClaimTypes.Role || c.Type == "role")
+                .Select(c => c.Value)
+                .Distinct()
+                .ToList();
+
+            return Ok(new
+            {
+                userName = User.Identity.Name,
+                userId = User.FindFirstValue(ClaimTypes.NameIdentifier),
+                email = User.FindFirstValue(ClaimTypes.Email),
+                isAuthenticated = User.Identity.IsAuthenticated,
+                authenticationType = User.Identity.AuthenticationType,
+                roles = roles,
+                isAdmin = User.IsInRole("Admin"),
+                claims = claims
+            });
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error en whoami: {Message}", ex.Message);
+            return StatusCode(500, new { message = $"Error: {ex.Message}" });
+        }
     }
 
     private async Task<string> GenerateJwtToken(User user)
     {
         var userRoles = await _userManager.GetRolesAsync(user);
+        // Eliminar posibles duplicados en los roles
+        userRoles = userRoles.Distinct().ToList();
 
         var claims = new List<Claim>
         {
@@ -197,10 +318,14 @@ public class AuthController : ControllerBase
             claims.Add(new Claim(ClaimTypes.MobilePhone, user.PhoneNumber));
         }
 
-        // Agregar roles como claims
+        // Agregar roles como claims usando el formato específico que se usa en TokenValidationParameters
         foreach (var role in userRoles)
         {
+            // Asegurarse de que se usa el formato correcto para roles
             claims.Add(new Claim(ClaimTypes.Role, role));
+            
+            // Para compatibilidad, también añadir en el formato simple
+            claims.Add(new Claim("role", role));
         }
 
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
@@ -243,9 +368,4 @@ public class AuthResponse
     public string Name { get; set; }
     public string PhoneNumber { get; set; }
     public string Role { get; set; }
-}
-
-public class TokenRequest
-{
-    public string Token { get; set; }
 } 

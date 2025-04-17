@@ -42,4 +42,9 @@ public class UserRepository : GenericRepository<User>, IUserRepository
         user.IsActive = false;
         await _userManager.UpdateAsync(user);
     }
+
+    public async Task<User> FindByEmailAsync(string email)
+    {
+        return await _userManager.FindByEmailAsync(email);
+    }
 }
