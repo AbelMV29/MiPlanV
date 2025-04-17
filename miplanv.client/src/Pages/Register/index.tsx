@@ -144,10 +144,36 @@ const Register = () => {
                     }
                 });
                 setErrors(validationErrors);
+            } else if (error.response?.data?.code === 'UserAlreadyExists') {
+                // Usuario ya existe
+                await Swal.fire({
+                    title: 'Usuario ya registrado',
+                    text: error.response.data.message,
+                    icon: 'info',
+                    confirmButtonColor: 'var(--color-principal)',
+                    showCancelButton: true,
+                    confirmButtonText: 'Ir a iniciar sesión',
+                    cancelButtonText: 'Cerrar'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        navigate('/login');
+                    }
+                });
+            } else if (error.response?.data?.code === 'UserReactivated') {
+                // Usuario reactivado
+                await Swal.fire({
+                    title: 'Cuenta reactivada',
+                    text: error.response.data.message,
+                    icon: 'success',
+                    confirmButtonColor: 'var(--color-principal)',
+                    confirmButtonText: 'Ir a iniciar sesión'
+                }).then(() => {
+                    navigate('/login');
+                });
             } else {
                 await Swal.fire({
                     title: 'Error',
-                    text: error.message || 'Error al registrar el usuario',
+                    text: error.response?.data?.message || error.message || 'Error al registrar el usuario',
                     icon: 'error',
                     confirmButtonColor: 'var(--color-principal)'
                 });

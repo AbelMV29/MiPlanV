@@ -1,0 +1,37 @@
+/* Estilos para formularios y campos de entrada en MiPlanV */
+
+/* Personalización de inputs con autocompletado */
+.MuiInputBase-root .MuiInputBase-input:-webkit-autofill,
+.MuiInputBase-root .MuiInputBase-input:-webkit-autofill:hover,
+.MuiInputBase-root .MuiInputBase-input:-webkit-autofill:focus,
+.MuiInputBase-root .MuiInputBase-input:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 30px var(--color-card-beige) inset !important;
+  -webkit-text-fill-color: var(--color-texto) !important;
+  transition: background-color 5000s ease-in-out 0s;
+}
+
+/* Para Firefox y otros navegadores */
+.MuiInputBase-root .MuiInputBase-input:autofill,
+.MuiInputBase-root .MuiInputBase-input:autofill:hover,
+.MuiInputBase-root .MuiInputBase-input:autofill:focus,
+.MuiInputBase-root .MuiInputBase-input:autofill:active {
+  box-shadow: 0 0 0 30px var(--color-card-beige) inset !important;
+  -webkit-text-fill-color: var(--color-texto) !important;
+  caret-color: var(--color-texto);
+  background-color: var(--color-card-beige) !important;
+}
+
+/* Estilos para inputs enfocados */
+.MuiTextField-root .Mui-focused .MuiOutlinedInput-notchedOutline {
+  border-color: var(--color-acento-dark) !important;
+}
+
+/* Estilo para el label cuando el input está enfocado */
+.MuiFormLabel-root.Mui-focused {
+  color: var(--color-acento-dark) !important;
+}
+
+/* Estilos para el relleno hover de los inputs */
+.MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline {
+  border-color: var(--color-acento) !important;
+} 

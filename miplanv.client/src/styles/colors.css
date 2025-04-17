@@ -1,13 +1,80 @@
-/* Paleta de Colores Principal */
+/* Paleta de Colores Principal - Rebranding MiPlanV */
 :root {
-    --color-principal: #4A6741;    /* Verde sage más suave */
-    --color-secundario: #B68D65;   /* Marrón cálido */
-    --color-fondo: #F5F5F0;        /* Beige muy claro */
-    --color-texto: #2D3436;        /* Gris oscuro más suave */
-    --color-acento: #D4A373;       /* Naranja tierra suave */
-    --color-pastel: #E6B3B3;       /* Rosa pastel suave */
-    --color-card-beige: #F8F6F1;   /* Beige muy suave para cards */
-    --color-card-gris: #F2F2F2;    /* Gris claro para cards */
+    /* Colores principales */
+    --color-principal: #4F7942;      /* Verde más vibrante */
+    --color-principal-light: #74A967; /* Verde claro complementario */
+    --color-principal-dark: #395736;  /* Verde oscuro para contraste */
+    
+    /* Colores secundarios */
+    --color-secundario: #E4A86F;     /* Durazno más cálido */
+    --color-secundario-light: #FFCCAA; /* Durazno claro */
+    --color-secundario-dark: #C88653;  /* Durazno oscuro */
+    
+    /* Colores de acento */
+    --color-acento: #FF9A8B;         /* Rosa melocotón */
+    --color-acento-light: #FFB7AB;   /* Rosa melocotón claro */
+    --color-acento-dark: #E8785F;     /* Color durazno más oscuro */
+    --color-acento-2: #4DC8C2;       /* Turquesa vibrante */
+    --color-acento-3: #FFC95E;       /* Amarillo mostaza */
+    
+    /* Colores neutros */
+    --color-fondo: #FAF7F2;          /* Beige muy claro */
+    --color-fondo-alt: #F5EEE7;      /* Beige alternativo */
+    --color-texto: #333333;          /* Gris oscuro para texto */
+    --color-texto-light: #666666;    /* Gris medio para subtexto */
+    
+    /* Colores para tarjetas */
+    --color-card-beige: #FFF9F0;     /* Beige muy suave para cards */
+    --color-card-verde: #EDF5EB;     /* Verde pálido para cards */
+    --color-card-durazno: #FFEEDE;   /* Durazno pálido para cards */
+    
+    /* Colores de estado */
+    --color-success: #6BC17A;        /* Verde éxito */
+    --color-warning: #FFD166;        /* Amarillo advertencia */
+    --color-error: #EF6351;          /* Rojo error */
+    
+    /* Sombras */
+    --shadow-sm: 0 2px 4px rgba(0,0,0,0.05);
+    --shadow-md: 0 4px 8px rgba(50,50,50,0.1);
+    --shadow-lg: 0 8px 16px rgba(50,50,50,0.15);
+    
+    /* Bordes redondeados */
+    --border-radius-sm: 6px;
+    --border-radius-md: 12px;
+    --border-radius-lg: 24px;
+    --border-radius-full: 50%;
+    
+    /* Tipografía */
+    --font-family-heading: 'Playfair Display', serif;
+    --font-family-body: 'Nunito', sans-serif;
+
+    --color-primario: #3f6212;
+    --color-primario-light: #84cc16;
+    --color-primario-dark: #365314;
+    --color-secundario: #581c87;
+    --color-secundario-light: #8b5cf6;
+    --color-secundario-dark: #4c1d95;
+    --color-terciario: #EAB308;
+    
+    /* Colores de acentos para decoración */
+    --color-acento: #FF9A8B;
+    --color-acento-light: #FFB7AB;
+    --color-acento-dark: #E8785F; /* Color durazno más oscuro */
+    --color-acento-2: #FF85A1;
+    --color-acento-3: #FBB1BD;
+    
+    --color-gris: #94a3b8;
+    --color-gris-light: #e2e8f0;
+    --color-gris-dark: #475569;
+    --color-blanco: #f8fafc;
+    --color-negro: #0f172a;
+    
+    --color-exito: #16a34a;
+    --color-advertencia: #facc15;
+    --color-info: #3b82f6;
+    
+    --fuente-principal: 'Nunito', sans-serif;
+    --fuente-secundaria: 'Montserrat', sans-serif;
 }
 
 /* Contenedor principal */

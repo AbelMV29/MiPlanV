@@ -20,10 +20,8 @@ const userService = {
             const response = await api.post<UserResponse>(ENDPOINTS.BASE, userData);
             return response.data;
         } catch (error: any) {
-            if (error.response?.data?.error) {
-                throw new Error(error.response.data.error);
-            }
-            throw new Error('Error al registrar el usuario');
+            // Propagar el error completo para poder acceder a error.response.data.code
+            throw error;
         }
     },
 

@@ -136,9 +136,9 @@ const Login: React.FC<LoginProps> = ({ onLogin, onGoogleLogin, onRegisterClick }
                 disabled={loading}
                 sx={{ 
                     mt: 2,
-                    backgroundColor: 'var(--color-principal)',
+                    backgroundColor: 'var(--color-acento)',
                     '&:hover': {
-                        backgroundColor: 'var(--color-secundario)',
+                        backgroundColor: 'var(--color-acento-dark)',
                     }
                 }}
             >
