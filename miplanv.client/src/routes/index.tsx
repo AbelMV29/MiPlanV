@@ -13,6 +13,8 @@ import NotFound from '../Pages/NotFound/index';
 // Páginas de administración
 import AdminDashboard from '../Pages/Admin/Dashboard/index';
 import AdminUsers from '../Pages/Admin/Users/index';
+import AdminProducts from '../Pages/Admin/Products/Index.tsx';
+import CreateProduct from '../Pages/Admin/Products/CreateProduct.tsx';
 
 export const router = createBrowserRouter([
     {
@@ -63,7 +65,11 @@ export const router = createBrowserRouter([
             },
             {
                 path: 'productos',
-                element: <div>Gestión de Productos</div>,
+                element: <AdminProducts />,
+            },
+            {
+                path: 'productos/crear',
+                element:<CreateProduct/>
             },
             {
                 path: 'facturas',
