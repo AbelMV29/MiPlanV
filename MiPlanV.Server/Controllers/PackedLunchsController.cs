@@ -2,21 +2,22 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MiPlanV.Domain.Entities;
-using MiPlanV.Application.PackedLunchs.Commands.CreatePackedLunch;
-using MiPlanV.Application.PackedLunchs.Commands.UpdatePackedLunch;
-using MiPlanV.Application.PackedLunchs.Commands.DeletePackedLunch;
-using MiPlanV.Application.PackedLunchs.Queries.GetAllPackedLunchs;
-using MiPlanV.Application.PackedLunchs.Queries.GetByIdPacketLunch;
+using MiPlanV.Application.PackedLunches.Commands.CreatePackedLunch;
+using MiPlanV.Application.PackedLunches.Commands.UpdatePackedLunch;
+using MiPlanV.Application.PackedLunches.Commands.DeletePackedLunch;
+using MiPlanV.Application.PackedLunches.Queries.GetAllPackedLunches;
+using MiPlanV.Application.PackedLunches.Queries.GetByIdPacketLunch;
+using MiPlanV.Application.Common.Dtos;
 
 namespace MiPlanV.Server.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class PackedLunchsController : ControllerBase
+    public class PackedLunchesController : ControllerBase
     {
         private readonly IMediator _mediator;
 
-        public PackedLunchsController(IMediator mediator)
+        public PackedLunchesController(IMediator mediator)
         {
             _mediator = mediator;
         }
@@ -65,7 +66,7 @@ namespace MiPlanV.Server.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetAll([FromQuery] GetAllPackedLunchsQuery request)
         {
-            IEnumerable<PackedLunch> packedLunches = await _mediator.Send(request);
+            PaginatedList<PackedLunch> packedLunches = await _mediator.Send(request);
             return Ok(packedLunches);
         }
 
@@ -115,7 +116,7 @@ namespace MiPlanV.Server.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<PackedLunch>> Update(int id, [FromForm] UpdatePackedLunchCommand command, CancellationToken cancellationToken)
+        public async Task<IActionResult> Update(int id, [FromForm] UpdatePackedLunchCommand command, CancellationToken cancellationToken)
         {
             if (id != command.Id)
                 return BadRequest("El ID de la URL no coincide con el ID de la vianda");
@@ -151,7 +152,7 @@ namespace MiPlanV.Server.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult> Delete([FromRoute] DeletePackedLunchCommand request, CancellationToken cancellationToken)
+        public async Task<IActionResult> Delete([FromRoute] DeletePackedLunchCommand request, CancellationToken cancellationToken)
         {
             try
             {

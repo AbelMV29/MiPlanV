@@ -1,7 +1,7 @@
 using MediatR;
 using MiPlanV.Application.Common.Interfaces;
 using MiPlanV.Domain.Entities;
-namespace MiPlanV.Application.PackedLunchs.Commands.CreatePackedLunch
+namespace MiPlanV.Application.PackedLunches.Commands.CreatePackedLunch
 {
     public class CreatePackedLunchCommandHandler : IRequestHandler<CreatePackedLunchCommand, PackedLunch>
     {

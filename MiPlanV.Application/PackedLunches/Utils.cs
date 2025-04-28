@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 
-namespace MiPlanV.Application.PackedLunchs
+namespace MiPlanV.Application.PackedLunches
 {
     internal static class Utils
     {

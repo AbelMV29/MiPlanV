@@ -1,7 +1,7 @@
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using MiPlanV.Domain.Entities;
-namespace MiPlanV.Application.PackedLunchs.Commands.CreatePackedLunch
+namespace MiPlanV.Application.PackedLunches.Commands.CreatePackedLunch
 {
     public class CreatePackedLunchCommand : IRequest<PackedLunch>
     {

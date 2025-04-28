@@ -27,7 +27,7 @@ export function CustomDashboard({ children, title, error }: CustomDashboard) {
                         boxShadow: 'var(--shadow-sm)',
                         mb: 4,
                         mx: 'auto',
-                        maxWidth: '95%' // Para centrar mejor la tabla
+                        maxWidth: '95%'
                     }}>
                     {children}
                 </Paper>

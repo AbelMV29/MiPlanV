@@ -5,16 +5,16 @@ import React from "react";
 interface TableProps {
     children: React.ReactNode,
     header: string[],
-    actualRowsLenght: number,
+    totalItems: number,
     page: number,
     rowsPerPage: number,
     loading: boolean,
-    handleChangePage: (event: React.ChangeEvent<HTMLInputElement>) => void,
-    handleChangeRowsPerPage: (event: React.ChangeEvent<HTMLInputElement>) => void
+    handleChangePage: (value: number) => void,
+    handleChangeRowsPerPage: (value: number) => void
 }
 
 
-export function CustomTable({ children, actualRowsLenght, header,
+export function CustomTable({ children, totalItems, header,
     page, rowsPerPage, loading, handleChangePage, handleChangeRowsPerPage }: TableProps) {
     return (<>
         {loading ? (
@@ -44,11 +44,11 @@ export function CustomTable({ children, actualRowsLenght, header,
                 <TablePagination
                     rowsPerPageOptions={[5, 10, 25]}
                     component="div"
-                    count={actualRowsLenght}
+                    count={totalItems}
                     rowsPerPage={rowsPerPage}
                     page={page}
-                    onPageChange={() => { handleChangePage }}
-                    onRowsPerPageChange={handleChangeRowsPerPage}
+                    onPageChange={(e, page) => { handleChangePage(page) }}
+                    onRowsPerPageChange={(e)=>{ handleChangeRowsPerPage(parseInt(e.target.value)) }}
                     labelRowsPerPage="Filas por página:"
                     labelDisplayedRows={({ from, to, count }) => `${from}-${to} de ${count}`}
                 />

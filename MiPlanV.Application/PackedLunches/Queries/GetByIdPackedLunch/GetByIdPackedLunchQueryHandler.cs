@@ -2,7 +2,7 @@ using MediatR;
 using MiPlanV.Application.Common.Interfaces;
 using MiPlanV.Domain.Entities;
 
-namespace MiPlanV.Application.PackedLunchs.Queries.GetByIdPacketLunch
+namespace MiPlanV.Application.PackedLunches.Queries.GetByIdPacketLunch
 {
     public class GetByIdPackedLunchQueryHandler : IRequestHandler<GetByIdPackedLunchQuery, PackedLunch>
     {

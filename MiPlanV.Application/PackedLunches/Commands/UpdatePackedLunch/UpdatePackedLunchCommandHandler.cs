@@ -1,7 +1,7 @@
 ﻿using MediatR;
 using MiPlanV.Application.Common.Interfaces;
 using MiPlanV.Domain.Entities;
-namespace MiPlanV.Application.PackedLunchs.Commands.UpdatePackedLunch
+namespace MiPlanV.Application.PackedLunches.Commands.UpdatePackedLunch
 {
     public class UpdatePackedLunchCommandHandler : IRequestHandler<UpdatePackedLunchCommand, PackedLunch>
     {

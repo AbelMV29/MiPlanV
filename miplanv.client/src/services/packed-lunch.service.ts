@@ -1,14 +1,27 @@
-import { PackedLunch } from "../models/PackedLunch"
+import { PaginatedList } from "../models/common";
+import { PackedLunch } from "../models/packedLunch";
+import { buildQueryString } from "../utils/common";
 import api from "./api.service"
 
 const ENDPOINTS = {
-    BASE: '/PackedLunchs',
+    BASE: '/PackedLunches',
     BASE_WITH_ID: (id: number) : string => `${ENDPOINTS.BASE}/${id}`
 }
 
+export interface GetAllQuery
+{
+    page: number;
+    pageSize: number;
+    name: string;
+    isVegan?: boolean | null;
+    isActive?: boolean | null;
+    isCurrentCampaign?: boolean | null;
+}
+
 export const packedLunchService = {
-    getAll: (name: string | null = null): Promise<PackedLunch[]> => {
-        return api.get<PackedLunch[]>(`${ENDPOINTS.BASE}${name ? `?name=${name}` : ''}`)
+    getAll: (query: GetAllQuery): Promise<PaginatedList<PackedLunch>> => {
+
+        return api.get<PaginatedList<PackedLunch>>(`${ENDPOINTS.BASE}?${buildQueryString(query)}`)
             .then(response => {
                 return response.data;
             })

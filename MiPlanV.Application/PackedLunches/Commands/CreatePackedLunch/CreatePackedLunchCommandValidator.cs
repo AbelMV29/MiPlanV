@@ -1,6 +1,6 @@
 using FluentValidation;
 
-namespace MiPlanV.Application.PackedLunchs.Commands.CreatePackedLunch
+namespace MiPlanV.Application.PackedLunches.Commands.CreatePackedLunch
 {
     public class CreatePackedLunchCommandValidator : AbstractValidator<CreatePackedLunchCommand>
     {

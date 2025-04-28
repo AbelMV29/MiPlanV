@@ -1,24 +1,33 @@
 import { useState } from "react";
-import { PackedLunch } from "../../../models/PackedLunch";
-import { packedLunchService } from "../../../services/packed-lunch.service";
-import { Avatar, Box, Chip, IconButton, InputAdornment, TableCell, TableRow, TextField } from "@mui/material";
+import { PaginatedList } from "../../../models/common";
+import { GetAllQuery, packedLunchService } from "../../../services/packed-lunch.service";
+import { Avatar, Box, Button, Chip, IconButton, TableCell, TableRow } from "@mui/material";
 import {
   Edit as EditIcon,
   Delete as DeleteIcon,
-  Search as SearchIcon
 } from '@mui/icons-material';
 import Swal from "sweetalert2";
 import { useService } from "../../../hooks/useService";
 import { CustomDashboard } from "../components/CustomDashboard";
 import { CustomTable } from "../components/CustomTable";
-import { ProductItem } from "../../Menu/components/ProductItem";
+import { useNavigate } from "react-router-dom";
+import { SearchBar } from "../components/SearchBar";
+import { PackedLunch } from "../../../models/packedLunch";
+import { SelectInput } from "../components/SelectInput";
 
 
 export function Products() {
-  const [name, setName] = useState<string>('');
   const [refrestProducts, setRefreshProducts] = useState<number>(0);
-  const [page] = useState<number>(0);
-  const [loading, error, packedLunchs] = useService<PackedLunch[]>(async () => packedLunchService.getAll(name), [], [name, refrestProducts])
+  const [params, setParams] = useState<GetAllQuery>({
+    page: 0,
+    pageSize: 5,
+    name: "",
+    isVegan: null,
+    isActive: null,
+    isCurrentCampaign: null,
+  })
+  const [loading, error, paginatedList] = useService<PaginatedList<PackedLunch>>(async () => packedLunchService.getAll(params), { items: [], pageIndex: 1, totalItems: 0 }, [params, refrestProducts])
+  const navigate = useNavigate();
 
   function handleDelete(id: number, name: string) {
     Swal.fire({
@@ -37,7 +46,6 @@ export function Products() {
         const deleteUser = async () => {
           try {
             await packedLunchService.delete(id);
-            console.log("respuesta exitosa")
             setRefreshProducts(prev => prev + 1);
           }
           catch {
@@ -49,42 +57,57 @@ export function Products() {
     })
   }
 
+  function setItemParams(key: string, value: any) {
+
+    if (key === "isVegan") {
+      switch (value) {
+        case "true":
+          value = true;
+          break;
+        case "false":
+          value = false;
+          break;
+        default:
+          value = null;
+          break;
+      }
+    }
+    setParams((prev) => ({ ...prev, [key]: value }));
+  }
 
   return (
     <CustomDashboard
       title="Gestión de Viandas"
       error={error}>
-      <Box sx={{ mb: 3 }}>
-        <TextField
-          fullWidth
-          placeholder={"Buscar una vianda por su nombre"}
-          InputProps={{
-            startAdornment: (
-              <InputAdornment position="start">
-                <SearchIcon />
-              </InputAdornment>
-            ),
-          }}
-          variant="outlined"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          sx={{
-            '& .MuiOutlinedInput-root': {
-              borderRadius: 2,
-            }
-          }}
-        />
+      <Button sx={{mb:3}} variant="contained" color="success" onClick={() => navigate('/admin/productos/crear')}>
+        Añadir nueva vianda
+      </Button>
+      <Box sx={{ mb: 3, display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 2 }}>
+        <SearchBar
+          value={params.name}
+          setValue={(value) => { setItemParams("name", value) }}
+          fullWidth={true}
+          variant="outlined" />
+        <SelectInput
+          label="Tipo de vianda (vegana o no)"
+          onChange={(value) => { setItemParams("isVegan", value) }}
+          value={params.isVegan === null ? "null" : params.isVegan!.toString()}
+          options={[
+            { id: "null", name: "Todos" },
+            { id: "true", name: "Vegana" },
+            { id: "false", name: "No vegana" },
+          ]} />
       </Box>
       <CustomTable
         loading={loading}
         header={["ID", "Nombre", "Vegana", "Imagen", "En campaña actual", "Activa", "Fecha de creación", "Acciones"]}
-        page={page}
-        actualRowsLenght={packedLunchs.length}
-        handleChangePage={() => { }}
-        handleChangeRowsPerPage={() => { }}
-        rowsPerPage={10}>
-        {packedLunchs.length > 0 ? (
-          packedLunchs.map((packedLunch) => (
+        page={params.page}
+        totalItems={paginatedList.totalItems}
+        handleChangePage={(value) => { setItemParams('page', value) }}
+        handleChangeRowsPerPage={(value) => { setItemParams('pageSize', value) }}
+        rowsPerPage={params.pageSize}>
+        {paginatedList.items.length > 0 ? (
+          paginatedList.items.map((packedLunch) => (
             <TableRow
               key={packedLunch.id}
               sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
@@ -123,7 +146,7 @@ export function Products() {
               </TableCell>
               <TableCell>{new Date(packedLunch.createdAt).toLocaleDateString()}</TableCell>
               <TableCell align="center">
-                <IconButton size="small" color="primary" sx={{ mr: 1 }}>
+                <IconButton size="small" color="primary" sx={{ mr: 1 }} onClick={() => { navigate(`/admin/productos/editar/${packedLunch.id}`) }}>
                   <EditIcon fontSize="small" />
                 </IconButton>
                 <IconButton

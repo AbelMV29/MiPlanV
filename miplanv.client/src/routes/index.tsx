@@ -15,6 +15,7 @@ import AdminDashboard from '../Pages/Admin/Dashboard/index';
 import AdminUsers from '../Pages/Admin/Users/index';
 import AdminProducts from '../Pages/Admin/Products/Index.tsx';
 import CreateProduct from '../Pages/Admin/Products/CreateProduct.tsx';
+import { EditProduct } from '../Pages/Admin/Products/EditProduct.tsx';
 
 export const router = createBrowserRouter([
     {
@@ -70,6 +71,10 @@ export const router = createBrowserRouter([
             {
                 path: 'productos/crear',
                 element:<CreateProduct/>
+            },
+            {
+                path: 'productos/editar/:id',
+                element: <EditProduct />,
             },
             {
                 path: 'facturas',

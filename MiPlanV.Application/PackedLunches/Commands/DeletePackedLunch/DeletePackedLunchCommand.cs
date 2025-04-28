@@ -1,5 +1,5 @@
 using MediatR;
-namespace MiPlanV.Application.PackedLunchs.Commands.DeletePackedLunch
+namespace MiPlanV.Application.PackedLunches.Commands.DeletePackedLunch
 {
     public class DeletePackedLunchCommand : IRequest<bool>
     {

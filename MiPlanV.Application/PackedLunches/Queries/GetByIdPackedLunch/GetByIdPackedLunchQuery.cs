@@ -1,7 +1,7 @@
 using MediatR;
 using MiPlanV.Domain.Entities;
 
-namespace MiPlanV.Application.PackedLunchs.Queries.GetByIdPacketLunch
+namespace MiPlanV.Application.PackedLunches.Queries.GetByIdPacketLunch
 {
     public class GetByIdPackedLunchQuery : IRequest<PackedLunch>
     {

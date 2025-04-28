@@ -1,7 +1,7 @@
 ﻿using MediatR;
 using MiPlanV.Application.Common.Interfaces;
 using MiPlanV.Domain.Entities;
-namespace MiPlanV.Application.PackedLunchs.Commands.DeletePackedLunch
+namespace MiPlanV.Application.PackedLunches.Commands.DeletePackedLunch
 {
     public class DeletePackedLunchCommandHandler : IRequestHandler<DeletePackedLunchCommand, bool>
     {
