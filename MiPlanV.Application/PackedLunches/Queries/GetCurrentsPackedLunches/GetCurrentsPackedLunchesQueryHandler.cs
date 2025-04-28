@@ -18,8 +18,7 @@ namespace MiPlanV.Application.PackedLunches.Queries.GetCurrentsPackedLunchs
         {
             IQueryable<PackedLunch> packedLunchesQuery = _repository.GetAllQuery();
 
-            //packedLunchesQuery = packedLunchesQuery.Where(p => p.IsActive && p.IsCurrent);
-            packedLunchesQuery = packedLunchesQuery.Where(p => p.Image != null).Take(7);
+            packedLunchesQuery = packedLunchesQuery.Where(p => p.IsActive && p.IsCurrent);
 
             return await packedLunchesQuery.Select(p => new GetCurrentsPackedLunchesResponse(p.Id, p.Name, p.Description, p.Image, p.IsVegan)).ToArrayAsync();
         }
