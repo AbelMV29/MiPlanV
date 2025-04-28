@@ -8,6 +8,7 @@ using MiPlanV.Application.PackedLunches.Commands.DeletePackedLunch;
 using MiPlanV.Application.PackedLunches.Queries.GetAllPackedLunches;
 using MiPlanV.Application.PackedLunches.Queries.GetByIdPacketLunch;
 using MiPlanV.Application.Common.Dtos;
+using MiPlanV.Application.PackedLunches.Queries.GetCurrentsPackedLunchs;
 
 namespace MiPlanV.Server.Controllers
 {
@@ -67,6 +68,22 @@ namespace MiPlanV.Server.Controllers
         public async Task<IActionResult> GetAll([FromQuery] GetAllPackedLunchsQuery request)
         {
             PaginatedList<PackedLunch> packedLunches = await _mediator.Send(request);
+            return Ok(packedLunches);
+        }
+
+        /// <summary>
+        /// Obtiene todas las viandas de la semana activa.
+        /// </summary>
+        /// <returns>Lista de viandas actvias</returns>
+        /// <response code="200">Retorna la lista de viandas encontradas.</response>
+        [HttpGet("current")]
+        [AllowAnonymous]
+        [ProducesResponseType(typeof(IEnumerable<PackedLunch>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> GetCurrents([FromQuery] GetCurrentsPackedLunchesQuery request)
+        {
+            GetCurrentsPackedLunchesResponse[] packedLunches = await _mediator.Send(request);
             return Ok(packedLunches);
         }
 

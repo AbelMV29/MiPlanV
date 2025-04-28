@@ -13,3 +13,11 @@ export interface PackedLunch extends BaseEntity {
     isCurrent: boolean;
     orderDetails: any[];
 }
+
+export interface CurrentPackedLunch {
+    id: number;
+    name: string;
+    description: string | null;
+    image: string | null;
+    isVegan: boolean;
+}

@@ -11,7 +11,7 @@ import { useService } from "../../../hooks/useService";
 import { CustomDashboard } from "../components/CustomDashboard";
 import { CustomTable } from "../components/CustomTable";
 import { useNavigate } from "react-router-dom";
-import { SearchBar } from "../components/SearchBar";
+import { SearchBar } from "../../../components/common/SearchBar";
 import { PackedLunch } from "../../../models/packedLunch";
 import { SelectInput } from "../components/SelectInput";
 

@@ -1,5 +1,5 @@
 import { PaginatedList } from "../models/common";
-import { PackedLunch } from "../models/packedLunch";
+import { CurrentPackedLunch, PackedLunch } from "../models/packedLunch";
 import { buildQueryString } from "../utils/common";
 import api from "./api.service"
 
@@ -22,6 +22,16 @@ export const packedLunchService = {
     getAll: (query: GetAllQuery): Promise<PaginatedList<PackedLunch>> => {
 
         return api.get<PaginatedList<PackedLunch>>(`${ENDPOINTS.BASE}?${buildQueryString(query)}`)
+            .then(response => {
+                return response.data;
+            })
+            .catch(() => {
+                throw new Error("Desconexión con el servidor");
+            });
+    },
+    getCurrents: () : Promise<CurrentPackedLunch[]> =>
+    {
+        return api.get<CurrentPackedLunch[]>(`${ENDPOINTS.BASE}/current`)
             .then(response => {
                 return response.data;
             })
