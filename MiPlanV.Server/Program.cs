@@ -6,6 +6,7 @@ using MiPlanV.Application.Common.Interfaces;
 using MiPlanV.Infrastructure.Identity;
 using MiPlanV.Infrastructure.Repository.Common;
 using MiPlanV.Infrastructure;
+using MiPlanV.Application;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication;
@@ -206,21 +207,8 @@ services.AddInfrastructureServices(builder.Configuration);
 
 services.AddScoped<IdentityInitializer>();
 services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
-services.AddMediatR(cfg => 
-{
-    Console.WriteLine("Configurando MediatR");
-    var assemblies = new[]
-    {
-        typeof(MiPlanV.Application.Users.Commands.CreateUserCommand).Assembly,
-        typeof(Program).Assembly
-    };
-    
-    foreach (var assembly in assemblies)
-    {
-        Console.WriteLine($"Registrando handlers de {assembly.GetName().Name}");
-        cfg.RegisterServicesFromAssembly(assembly);
-    }
-});
+//Agregar servicios de la capa de MiPlanV.Application
+services.AddApplicationServices();
 
 var app = builder.Build();
 

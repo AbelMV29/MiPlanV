@@ -88,13 +88,13 @@ namespace MiPlanV.Infrastructure.Persistence
                 {
                     Id = 1,
                     Name = "Standar",
-                    CreatedAt = DateTime.UtcNow
+                    CreatedAt = new DateTime(2025, 04, 18)
                 },
                 new Size
                 {
                     Id = 2,
                     Name = "Grande",
-                    CreatedAt = DateTime.UtcNow
+                    CreatedAt = new DateTime(2025, 04, 18)
                 });
             });
 
@@ -104,17 +104,17 @@ namespace MiPlanV.Infrastructure.Persistence
                 {
                     Id = 1,
                     Name = "Individual",
-                    CreatedAt = DateTime.UtcNow
+                    CreatedAt = new DateTime(2025, 04, 18)
                 }, new Quantity
                 {
                     Id = 2,
                     Name = "Pack 7",
-                    CreatedAt = DateTime.UtcNow
+                    CreatedAt = new DateTime(2025, 04, 18)
                 }, new Quantity
                 {
                     Id = 3,
                     Name = "Pack 14",
-                    CreatedAt = DateTime.UtcNow
+                    CreatedAt = new DateTime(2025, 04, 18)
                 });
             });
 
@@ -128,7 +128,7 @@ namespace MiPlanV.Infrastructure.Persistence
                         QuantityId = 1, // Individual
                         SizeId = 1, // Standard
                         Price = 7400,
-                        CreatedAt = DateTime.UtcNow
+                        CreatedAt = new DateTime(2025, 04, 18)
                     },
                     new Offer
                     {
@@ -136,7 +136,7 @@ namespace MiPlanV.Infrastructure.Persistence
                         QuantityId = 2, // Pack 7
                         SizeId = 1, // Standard
                         Price = 50000,
-                        CreatedAt = DateTime.UtcNow
+                        CreatedAt = new DateTime(2025, 04, 18)
                     },
                     new Offer
                     {
@@ -144,7 +144,7 @@ namespace MiPlanV.Infrastructure.Persistence
                         QuantityId = 3, // Pack 14
                         SizeId = 1, // Standard
                         Price = 98000,
-                        CreatedAt = DateTime.UtcNow
+                        CreatedAt = new DateTime(2025, 04, 18)
                     },
                     // Viandas Grande
                     new Offer
@@ -153,7 +153,7 @@ namespace MiPlanV.Infrastructure.Persistence
                         QuantityId = 1, // Individual
                         SizeId = 2, // Grande
                         Price = 8500,
-                        CreatedAt = DateTime.UtcNow
+                        CreatedAt = new DateTime(2025, 04, 18)
                     },
                     new Offer
                     {
@@ -161,7 +161,7 @@ namespace MiPlanV.Infrastructure.Persistence
                         QuantityId = 2, // Pack 7
                         SizeId = 2, // Grande
                         Price = 59000,
-                        CreatedAt = DateTime.UtcNow
+                        CreatedAt = new DateTime(2025, 04, 18)
                     },
                     new Offer
                     {
@@ -169,7 +169,7 @@ namespace MiPlanV.Infrastructure.Persistence
                         QuantityId = 3, // Pack 14
                         SizeId = 2, // Grande
                         Price = 117000,
-                        CreatedAt = DateTime.UtcNow
+                        CreatedAt = new DateTime(2025, 04, 18)
                     }
                 );
                 
